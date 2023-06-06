@@ -11,7 +11,7 @@ class Library {
           .map((e) => Book(
               title: e.title,
               isbn: e.isbn,
-              synopsis: e.synopsis,
+              synopsis: e.synopsis.join("\n"),
               coverUrl: Uri.parse(e.cover),
               price: e.price))
           .toList());

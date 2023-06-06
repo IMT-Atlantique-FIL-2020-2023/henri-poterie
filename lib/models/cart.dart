@@ -34,7 +34,7 @@ class Cart {
     final totalTmp = total;
 
     final computedOffers = availableOffers
-        .map((offer) => (offer.apply(totalTmp), offer.toString()));
+        .map((offer) => (offer.apply(totalTmp), offer.runtimeType.toString()));
 
     final min = minBy(computedOffers, (p0) => p0.$1);
     if (min == null) {

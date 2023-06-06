@@ -9,7 +9,7 @@ class BookDTO {
   final String title;
   final double price;
   final String cover;
-  final String synopsis;
+  final List<String> synopsis;
 
   BookDTO(
       {required this.isbn,

@@ -11,7 +11,8 @@ BookDTO _$BookDTOFromJson(Map<String, dynamic> json) => BookDTO(
       title: json['title'] as String,
       price: (json['price'] as num).toDouble(),
       cover: json['cover'] as String,
-      synopsis: json['synopsis'] as String,
+      synopsis:
+          (json['synopsis'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$BookDTOToJson(BookDTO instance) => <String, dynamic>{
