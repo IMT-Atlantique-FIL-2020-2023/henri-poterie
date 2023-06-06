@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:henri_poterie/screens/book_detail_screen.dart';
 import 'package:henri_poterie/screens/home_screen.dart';
 
 void main() {
@@ -17,7 +18,8 @@ class HenriPoterie extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const HomeScreen()
+        '/': (context) => const HomeScreen(),
+        '/book': (context) => const BookDetailScreen(),
       }
     );
   }
