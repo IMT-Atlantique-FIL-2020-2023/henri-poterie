@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:henri_poterie/screens/basket_sheet.dart';
 import 'package:henri_poterie/screens/home_screen.dart';
 
 void main() {
@@ -17,7 +18,7 @@ class HenriPoterie extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const HomeScreen()
+        '/': (context) => BasketSheet(const HomeScreen())
       }
     );
   }
