@@ -191,7 +191,7 @@ class _BasketSheetState extends State<BasketSheet> {
                   margin: const EdgeInsets.only(left: 16, top: 10, bottom: 10),
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage("images/trash-can.png"),
+                        image: AssetImage("assets/images/trash-can.png"),
                         fit: BoxFit.fitHeight,
                         alignment: Alignment.centerLeft
                     ),
