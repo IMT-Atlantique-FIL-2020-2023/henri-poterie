@@ -19,7 +19,7 @@ class HenriPoterie extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => BasketSheet(const HomeScreen()),
+        '/': (context) => const BasketSheet(widget: HomeScreen()),
         '/book': (context) => const BookDetailScreen(),
       }
     );
