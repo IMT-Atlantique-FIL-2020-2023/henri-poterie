@@ -15,13 +15,18 @@ class BasketSheet extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
+    const minExtent = 110.0;
+
     return DraggableBottomSheet(
-      minExtent: 110,
+      minExtent: minExtent,
       useSafeArea: false,
       curve: Curves.easeIn,
       previewWidget: _previewWidget(),
       expandedWidget: _expandedWidget(),
-      backgroundWidget: innerWidget,
+      backgroundWidget: Padding(
+        padding: const EdgeInsets.only(bottom: minExtent),
+        child: innerWidget
+      ),
       duration: const Duration(milliseconds: 10),
       maxExtent: MediaQuery.of(context).size.height * 0.8,
       onDragging: (pos) {},

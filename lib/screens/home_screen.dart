@@ -15,24 +15,26 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           title: const Text("Henri Poterie"),
         ),
-        body: GridView.count(
-          crossAxisCount: 3,
-          childAspectRatio: MediaQuery.of(context).size.width /
-              (MediaQuery.of(context).size.height / 1.2),
-          children: const [
-            Book(),
-            Book(),
-            Book(),
-            Book(),
-            Book(),
-            Book(),
-            Book(),
-            Book(),
-            Book(),
-            Book(),
-            Book(),
-            Book(),
-          ],
-        ));
+        body: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Container(
+                alignment: Alignment.topCenter,
+                child: const Wrap(
+                  spacing: 20,
+                  children: [
+                    Book(),
+                    Book(),
+                    Book(),
+                    Book(),
+                    Book(),
+                    Book(),
+                    Book(),
+                    Book(),
+                    Book(),
+                    Book(),
+                    Book(),
+                    Book(),
+                  ],
+                ))));
   }
 }
