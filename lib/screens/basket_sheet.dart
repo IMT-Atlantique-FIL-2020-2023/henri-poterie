@@ -77,10 +77,10 @@ class _BasketSheetState extends State<BasketSheet> {
       curve: Curves.easeIn,
       previewWidget: _previewWidget(),
       expandedWidget: _expandedWidget(),
-      backgroundWidget: Padding(
+      backgroundWidget: Container(color: Colors.white,child: Padding(
         padding: const EdgeInsets.only(bottom: minExtent),
         child: innerWidget
-      ),
+      ),),
       duration: const Duration(milliseconds: 10),
       maxExtent: MediaQuery.of(context).size.height * 0.8,
       onDragging: (pos) {},
