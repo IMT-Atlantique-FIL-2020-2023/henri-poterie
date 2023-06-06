@@ -6,3 +6,7 @@ sealed class LibraryEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+final class LibraryEventBooksRequested extends LibraryEvent {
+  const LibraryEventBooksRequested();
+}
