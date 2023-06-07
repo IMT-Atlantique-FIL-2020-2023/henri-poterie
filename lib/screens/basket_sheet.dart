@@ -117,7 +117,7 @@ class _BasketSheetState extends State<BasketSheet> {
                             onPressed: () => {},
                             child: const Text("Checkout",
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 16,
                                   fontFamily: "Roboto",
                                   fontWeight: FontWeight.bold,
                                 )))

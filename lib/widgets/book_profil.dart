@@ -43,7 +43,7 @@ class BookProfil extends StatelessWidget {
             label: const Text('Add to cart'),
             style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
             onPressed: () {
-              context.read<CartCubit>().addBook(Book(title: 'test', isbn: 'isbn', synopsis: 'synopsis', coverUrl: Uri.parse('https://firebasestorage.googleapis.com/v0/b/henri-potier.appspot.com/o/hp0.jpg?alt=media'), price: 15 ));
+              context.read<CartCubit>().addBook(_book);
             },
           )
         ],
