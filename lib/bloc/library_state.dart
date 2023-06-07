@@ -1,4 +1,4 @@
-part of 'library_state_bloc.dart';
+part of 'library_bloc.dart';
 
 enum LibraryStatus { initial, loading, success, failure }
 

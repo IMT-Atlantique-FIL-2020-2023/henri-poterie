@@ -2,9 +2,21 @@ import 'package:flutter/material.dart';
 
 import '../widgets/book_profil.dart';
 import '../widgets/book_synopsis.dart';
+import 'package:henri_poterie/models/book.dart' as model;
+
+import 'basket_sheet.dart';
 
 class BookDetailScreen extends StatelessWidget {
-  const BookDetailScreen({super.key});
+  static Route<void> route({required model.Book book}) {
+    return MaterialPageRoute(
+      fullscreenDialog: true,
+      builder: (context) => BasketSheet(widget: BookDetailScreen(book: book)),
+    );
+  }
+
+  final model.Book _book;
+
+  const BookDetailScreen({super.key, required model.Book book}) : _book = book;
 
   @override
   Widget build(BuildContext context) {
@@ -20,19 +32,20 @@ class BookDetailScreen extends StatelessWidget {
               child: Flex(
                 direction: isScreenWide ? Axis.horizontal : Axis.vertical,
                 children: isScreenWide
-                    ? (const [
+                    ? ([
                         Expanded(
                           flex: 1,
-                          child: BookProfil(),
+                          child: BookProfil(book: _book),
                         ),
-                        Expanded(flex: 2, child: BookSynopsis())
+                        Expanded(flex: 2, child: BookSynopsis(book: _book))
                       ])
-                    : (const [
+                    : ([
                         SizedBox(
-                          width: double.infinity,
-                          child: BookProfil(),
-                        ),
-                        SizedBox(width: double.infinity, child: BookSynopsis())
+                            width: double.infinity,
+                            child: BookProfil(book: _book)),
+                        SizedBox(
+                            width: double.infinity,
+                            child: BookSynopsis(book: _book))
                       ]),
               )),
         ));
