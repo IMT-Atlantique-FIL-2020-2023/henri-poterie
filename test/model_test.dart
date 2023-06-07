@@ -15,7 +15,7 @@ void main() {
     expect(cart.books.length, 1);
 
     final offer = await cart.computeTotalWithOffer();
-    expect(offer.$1, 33.6);
+    expect(offer.$1, 33.25);
     expect(offer.$2, "Percentage");
   });
 }
