@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:henri_poterie/models/book.dart' as model;
+import 'package:henri_poterie/screens/book_detail_screen.dart';
 
 class Book extends StatelessWidget {
   final model.Book _book;
@@ -9,9 +10,13 @@ class Book extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => {Navigator.pushNamed(context, '/book')},
+      onTap: () => {
+        Navigator.of(context).push(
+          BookDetailScreen.route(book: _book),
+        )
+      },
       child: Padding(
-        padding: EdgeInsets.all(5.0),
+        padding: const EdgeInsets.all(5.0),
         child: SizedBox(
           width: 150,
           child: Column(
@@ -21,7 +26,7 @@ class Book extends StatelessWidget {
               Image(image: NetworkImage(_book.coverUrl.toString())),
               Text(
                 _book.title,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
               ),
               Text(
                 '\$${_book.price}',
