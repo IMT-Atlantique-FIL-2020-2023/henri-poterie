@@ -3,7 +3,6 @@ import 'package:henri_poterie/models/book.dart' as model;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/cart_cubit.dart';
-import '../models/book.dart';
 import '../models/cart.dart';
 
 class BookProfil extends StatelessWidget {
