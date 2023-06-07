@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:draggable_bottom_sheet/draggable_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../bloc/cart_cubit.dart';
 import '../models/cart.dart';
@@ -18,7 +22,11 @@ class BasketSheet extends StatefulWidget {
 
 class _BasketSheetState extends State<BasketSheet> {
   late final Widget innerWidget = widget.widget;
+
   final separatorColor = const Color.fromRGBO(180, 180, 180, 1);
+  final FadeInController _fadeInController = FadeInController();
+  final RoundedLoadingButtonController _btnController =
+      RoundedLoadingButtonController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +53,11 @@ class _BasketSheetState extends State<BasketSheet> {
   }
 
   Future<String> getTotal(Cart cart) async {
-    return cart.computeTotalWithOffer().then((value) => "\$${value.$1}");
+    _fadeInController.fadeOut();
+    final value =
+        await cart.computeTotalWithOffer().then((value) => "\$${value.$1}");
+    _fadeInController.fadeIn();
+    return value;
   }
 
   Widget getHeaderWidgets(BuildContext context, Cart cart) {
@@ -71,21 +83,24 @@ class _BasketSheetState extends State<BasketSheet> {
                       children: [
                         Align(
                           alignment: Alignment.topLeft,
-                          child: FutureBuilder(
-                              future: getTotal(cart),
-                              initialData: "Loading total price ...",
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<String> value) {
-                                return Text(
-                                  value.data ?? "Loading total price ...",
-                                  style: const TextStyle(
-                                      color: Colors.black,
-                                      fontFamily: "Roboto",
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                      decoration: TextDecoration.none),
-                                );
-                              }),
+                          child: FadeIn(
+                              duration: const Duration(milliseconds: 500),
+                              controller: _fadeInController,
+                              child: FutureBuilder(
+                                  future: getTotal(cart),
+                                  initialData: "Loading total price ...",
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<String> value) {
+                                    return Text(
+                                      value.data ?? "Loading total price ...",
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontFamily: "Roboto",
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                          decoration: TextDecoration.none),
+                                    );
+                                  })),
                         ),
                         Align(
                             alignment: Alignment.topLeft,
@@ -110,11 +125,21 @@ class _BasketSheetState extends State<BasketSheet> {
                     alignment: Alignment.topRight,
                     child: Column(
                       children: [
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                shape: const StadiumBorder(),
-                                padding: const EdgeInsets.all(15.0)),
-                            onPressed: () => {},
+                        RoundedLoadingButton(
+                            controller: _btnController,
+                            onPressed: () async {
+                              final res = await cart.computeTotalWithOffer();
+
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                      content: Text("Total price: \$${res.$1},"
+                                          " best offer applied: ${res.$2}")));
+                              _btnController.success();
+
+                              Timer(const Duration(seconds: 3), () {
+                                _btnController.stop();
+                              });
+                            },
                             child: const Text("Checkout",
                                 style: TextStyle(
                                   fontSize: 16,
