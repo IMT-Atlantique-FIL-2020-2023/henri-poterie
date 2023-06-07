@@ -23,10 +23,15 @@ class Book extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Image(image: NetworkImage(_book.coverUrl.toString())),
+              Image(
+                image: NetworkImage(_book.coverUrl.toString()),
+                width: 150,
+                height: 266,
+              ),
               Text(
                 _book.title,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
               ),
               Text(
                 '\$${_book.price}',
