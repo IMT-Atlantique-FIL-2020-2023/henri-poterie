@@ -17,4 +17,8 @@ class CartCubit extends Cubit<Cart> {
     books.removeAt(index);
     emit(Cart(books: books));
   }
+
+  void resetCart() {
+    emit(Cart(books: []));
+  }
 }

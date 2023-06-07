@@ -33,7 +33,8 @@ class _BasketSheetState extends State<BasketSheet> {
     const minExtent = 110.0;
 
     return BlocBuilder<CartCubit, Cart>(
-        builder: (context, cart) => DraggableBottomSheet(
+        builder: (context, cart) => Scaffold(
+                body: DraggableBottomSheet(
               minExtent: minExtent,
               useSafeArea: false,
               curve: Curves.easeIn,
@@ -49,13 +50,13 @@ class _BasketSheetState extends State<BasketSheet> {
               duration: const Duration(milliseconds: 10),
               maxExtent: MediaQuery.of(context).size.height * 0.8,
               onDragging: (pos) {},
-            ));
+            )));
   }
 
   Future<String> getTotal(Cart cart) async {
     _fadeInController.fadeOut();
     final value =
-        await cart.computeTotalWithOffer().then((value) => "\$${value.$1}");
+        await cart.computeTotalWithOffer().then((value) => "\$${value.$1.toStringAsFixed(2)}");
     _fadeInController.fadeIn();
     return value;
   }
@@ -122,33 +123,31 @@ class _BasketSheetState extends State<BasketSheet> {
               Flexible(
                   flex: 50,
                   child: Container(
-                    alignment: Alignment.topRight,
-                    child: Column(
-                      children: [
-                        RoundedLoadingButton(
-                            controller: _btnController,
-                            onPressed: () async {
-                              final res = await cart.computeTotalWithOffer();
-
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                      content: Text("Total price: \$${res.$1},"
-                                          " best offer applied: ${res.$2}")));
-                              _btnController.success();
-
-                              Timer(const Duration(seconds: 3), () {
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                          alignment: Alignment.centerRight,
+                          width: 150,
+                          child: RoundedLoadingButton(
+                              controller: _btnController,
+                              onPressed: () async {
+                                final res = await cart.computeTotalWithOffer();
                                 _btnController.stop();
-                              });
-                            },
-                            child: const Text("Checkout",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontFamily: "Roboto",
-                                  fontWeight: FontWeight.bold,
-                                )))
-                      ],
-                    ),
-                  ))
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        behavior: SnackBarBehavior.floating,
+                                        margin:
+                                            const EdgeInsets.only(bottom: 0),
+                                        content: Text(
+                                            "Total price: \$${res.$1.toStringAsFixed(2)},"
+                                            " best offer applied: ${res.$2}")));
+                                context.read<CartCubit>().resetCart();
+                              },
+                              child: const Text("Checkout",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: "Roboto",
+                                    fontWeight: FontWeight.bold,
+                                  ))))))
             ],
           ),
         ]));
