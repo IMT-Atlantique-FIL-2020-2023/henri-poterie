@@ -10,8 +10,7 @@ void main() {
 
   test('Compute best offer with one book', () async {
     final lib = await Library.fetchLibrary();
-    final cart = Cart();
-    cart.add(lib.books[0]);
+    final cart = Cart(books: [lib.books[0]]);
     expect(cart.books.length, 1);
 
     final offer = await cart.computeTotalWithOffer();
@@ -20,7 +19,7 @@ void main() {
   });
 
   test('Compute best offer with no books', () async {
-    final cart = Cart();
+    final cart = Cart(books: []);
     await cart.computeTotalWithOffer();
   });
 }
