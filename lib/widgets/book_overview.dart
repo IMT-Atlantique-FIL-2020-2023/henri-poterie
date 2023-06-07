@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/cart_cubit.dart';
 import '../models/cart.dart';
 
-class BookProfil extends StatelessWidget {
+class BookOverview extends StatelessWidget {
   final model.Book _book;
 
-  const BookProfil({super.key, required model.Book book}) : _book = book;
+  const BookOverview({super.key, required model.Book book}) : _book = book;
 
   @override
   Widget build(BuildContext context) {

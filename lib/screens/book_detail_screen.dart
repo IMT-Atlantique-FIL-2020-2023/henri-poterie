@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/book_profil.dart';
+import '../widgets/book_overview.dart';
 import '../widgets/book_synopsis.dart';
 import 'package:henri_poterie/models/book.dart' as model;
 
@@ -35,14 +35,14 @@ class BookDetailScreen extends StatelessWidget {
                     ? ([
                         Expanded(
                           flex: 1,
-                          child: BookProfil(book: _book),
+                          child: BookOverview(book: _book),
                         ),
                         Expanded(flex: 2, child: BookSynopsis(book: _book))
                       ])
                     : ([
                         SizedBox(
                             width: double.infinity,
-                            child: BookProfil(book: _book)),
+                            child: BookOverview(book: _book)),
                         SizedBox(
                             width: double.infinity,
                             child: BookSynopsis(book: _book))
