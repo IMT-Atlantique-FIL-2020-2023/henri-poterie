@@ -55,8 +55,9 @@ class _BasketSheetState extends State<BasketSheet> {
 
   Future<String> getTotal(Cart cart) async {
     _fadeInController.fadeOut();
-    final value =
-        await cart.computeTotalWithOffer().then((value) => "\$${value.$1.toStringAsFixed(2)}");
+    final value = await cart
+        .computeTotalWithOffer()
+        .then((value) => "\$${value.$1.toStringAsFixed(2)}");
     _fadeInController.fadeIn();
     return value;
   }
@@ -82,18 +83,17 @@ class _BasketSheetState extends State<BasketSheet> {
                     alignment: Alignment.topLeft,
                     child: Column(
                       children: [
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: FadeIn(
+                        Row(children: [
+                          FadeIn(
                               duration: const Duration(milliseconds: 500),
                               controller: _fadeInController,
                               child: FutureBuilder(
                                   future: getTotal(cart),
-                                  initialData: "Loading total price ...",
+                                  initialData: "\$00.00",
                                   builder: (BuildContext context,
                                       AsyncSnapshot<String> value) {
                                     return Text(
-                                      value.data ?? "Loading total price ...",
+                                      value.data ?? "\$00.00",
                                       style: const TextStyle(
                                           color: Colors.black,
                                           fontFamily: "Roboto",
@@ -102,7 +102,20 @@ class _BasketSheetState extends State<BasketSheet> {
                                           decoration: TextDecoration.none),
                                     );
                                   })),
-                        ),
+                          if (cart.books.isNotEmpty)
+                            Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Text(
+                                  "\$${cart.total}",
+                                  style: const TextStyle(
+                                      color: Colors.red,
+                                      fontFamily: "Roboto",
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 20,
+                                      decoration: TextDecoration.lineThrough,
+                                      decorationThickness: 3),
+                                ))
+                        ]),
                         Align(
                             alignment: Alignment.topLeft,
                             child: Text(
