@@ -8,13 +8,10 @@ import 'offer.dart';
 class Cart {
   List<Book> books = [];
 
+  Cart({required this.books});
+
   /// Total price of the cart
   double get total => books.fold(0, (a, b) => a + b.price);
-
-  /// Add a book to the cart
-  void add(Book book) {
-    books.add(book);
-  }
 
   /// Compute the total price of the cart with the best offer
   Future<(double newPrice, String offerType)> computeTotalWithOffer() async {
@@ -22,12 +19,13 @@ class Cart {
         ListStringToJoin(books.map((b) => b.isbn).toList()));
 
     final availableOffers = commercialOffers.offers
-        .map((offer) => switch (offer) {
-              PercentageDTO(value: var value) => Percentage(value: value),
-              MinusDTO(value: var value) => Minus(value: value),
-              SliceDTO(value: var value, sliceValue: var sliceValue) =>
-                Slice(value: value, sliceValue: sliceValue)
-            })
+        .map((offer) =>
+    switch (offer) {
+      PercentageDTO(value: var value) => Percentage(value: value),
+      MinusDTO(value: var value) => Minus(value: value),
+      SliceDTO(value: var value, sliceValue: var sliceValue) =>
+          Slice(value: value, sliceValue: sliceValue)
+    })
         .toList();
 
     /// To compute it only one time

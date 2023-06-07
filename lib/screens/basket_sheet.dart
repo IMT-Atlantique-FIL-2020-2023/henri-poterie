@@ -1,5 +1,9 @@
 import 'package:draggable_bottom_sheet/draggable_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../bloc/cart_cubit.dart';
+import '../models/cart.dart';
 
 class BasketSheet extends StatefulWidget {
   final Widget widget;
@@ -15,79 +19,36 @@ class BasketSheet extends StatefulWidget {
 class _BasketSheetState extends State<BasketSheet> {
   late final Widget innerWidget = widget.widget;
   final separatorColor = const Color.fromRGBO(180, 180, 180, 1);
-  final List<IconData> icons = const [
-    Icons.message,
-    Icons.call,
-    Icons.mail,
-    Icons.notifications,
-    Icons.settings,
-  ];
-  final List<String> entries = <String>[
-    'A',
-    'B',
-    'C',
-    'C',
-    'C',
-    'C',
-    'C',
-    'C',
-    'C',
-    'C',
-    'C',
-    'C',
-    'C',
-    'C',
-    'C',
-    'C',
-    'C',
-    'C',
-    'C',
-    'C'
-  ];
-  final List<int> colorCodes = <int>[
-    600,
-    500,
-    100,
-    100,
-    100,
-    100,
-    100,
-    100,
-    100,
-    100,
-    100,
-    100,
-    100,
-    100,
-    100,
-    100,
-    100,
-    100,
-    100,
-    100
-  ];
 
   @override
   Widget build(BuildContext context) {
     const minExtent = 110.0;
 
-    return DraggableBottomSheet(
-      minExtent: minExtent,
-      useSafeArea: false,
-      curve: Curves.easeIn,
-      previewWidget: _previewWidget(),
-      expandedWidget: _expandedWidget(),
-      backgroundWidget: Container(color: Colors.white,child: Padding(
-        padding: const EdgeInsets.only(bottom: minExtent),
-        child: innerWidget
-      ),),
-      duration: const Duration(milliseconds: 10),
-      maxExtent: MediaQuery.of(context).size.height * 0.8,
-      onDragging: (pos) {},
-    );
+    return BlocBuilder<CartCubit, Cart>(
+        builder: (context, cart) => DraggableBottomSheet(
+              minExtent: minExtent,
+              useSafeArea: false,
+              curve: Curves.easeIn,
+              previewWidget: getWidget([getHeaderWidgets(context, cart)]),
+              expandedWidget: getWidget([getHeaderWidgets(context, cart)] +
+                  [getBooksWidget(context, cart)]),
+              backgroundWidget: Container(
+                color: Colors.white,
+                child: Padding(
+                    padding: const EdgeInsets.only(bottom: minExtent),
+                    child: innerWidget),
+              ),
+              duration: const Duration(milliseconds: 10),
+              maxExtent: MediaQuery.of(context).size.height * 0.8,
+              onDragging: (pos) {},
+            ));
   }
 
-  Widget getHeaderWidgets() {
+  Future<String> getTotal(Cart cart) async {
+    return cart.computeTotalWithOffer().then((value) => "\$${value.$1}");
+  }
+
+  Widget getHeaderWidgets(BuildContext context, Cart cart) {
     return Container(
         padding: const EdgeInsets.all(16),
         child: Column(children: [
@@ -106,28 +67,37 @@ class _BasketSheetState extends State<BasketSheet> {
                   flex: 50,
                   child: Container(
                     alignment: Alignment.topLeft,
-                    child: const Column(
+                    child: Column(
                       children: [
                         Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "50.20 €",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: "Roboto",
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 30,
-                                  decoration: TextDecoration.none),
-                            )),
+                          alignment: Alignment.topLeft,
+                          child: FutureBuilder(
+                              future: getTotal(cart),
+                              initialData: "Loading total price ...",
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<String> value) {
+                                return Text(
+                                  value.data ?? "Loading total price ...",
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: "Roboto",
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      decoration: TextDecoration.none),
+                                );
+                              }),
+                        ),
                         Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "2 items",
-                              style: TextStyle(
+                              cart.books.length >= 2
+                                  ? "${cart.books.length} items"
+                                  : "${cart.books.length} item",
+                              style: const TextStyle(
                                 color: Colors.black,
                                 fontFamily: "Roboto",
                                 fontWeight: FontWeight.normal,
-                                fontSize: 20,
+                                fontSize: 18,
                                 decoration: TextDecoration.none,
                               ),
                             )),
@@ -144,12 +114,12 @@ class _BasketSheetState extends State<BasketSheet> {
                             style: ElevatedButton.styleFrom(
                                 shape: const StadiumBorder(),
                                 padding: const EdgeInsets.all(15.0)),
-                            onPressed: () {},
+                            onPressed: () => {},
                             child: const Text("Checkout",
                                 style: TextStyle(
-                                  fontSize: 25,
+                                  fontSize: 20,
                                   fontFamily: "Roboto",
-                                  fontWeight: FontWeight.normal,
+                                  fontWeight: FontWeight.bold,
                                 )))
                       ],
                     ),
@@ -171,62 +141,51 @@ class _BasketSheetState extends State<BasketSheet> {
         child: Column(children: children));
   }
 
-  Widget _previewWidget() {
-    return getWidget([getHeaderWidgets()]);
-  }
-
-  Widget getBooksWidget() {
+  Widget getBooksWidget(BuildContext context, Cart cart) {
     return Expanded(
         child: ListView.separated(
       scrollDirection: Axis.vertical,
-      itemCount: entries.length,
+      itemCount: cart.books.length,
       itemBuilder: (BuildContext context, int index) {
         return Dismissible(
           // Each Dismissible must contain a Key. Keys allow Flutter to
           // uniquely identify widgets.
           key: UniqueKey(),
           background: Container(
-              color: const Color.fromRGBO(220, 20, 60, 1),
-              child: Container(
-                  margin: const EdgeInsets.only(left: 16, top: 10, bottom: 10),
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("assets/images/trash-can.png"),
-                        fit: BoxFit.fitHeight,
-                        alignment: Alignment.centerLeft
-                    ),
-                  ))
-              ,
+            color: const Color.fromRGBO(220, 20, 60, 1),
+            child: Container(
+              margin: const EdgeInsets.only(left: 16, top: 10, bottom: 10),
+              alignment: Alignment.centerLeft,
+              child: const Icon(
+                Icons.delete_forever,
+                color: Colors.white,
+                size: 50,
               ),
+            ),
+          ),
           //Container(color: const Color.fromRGBO(220, 20, 60, 1))
           // Provide a function that tells the app
           // what to do after an item has been swiped away.
           onDismissed: (direction) {
             // Remove the item from the data source.
             setState(() {
-              entries.removeAt(index);
-              colorCodes.removeAt(index);
+              context.read<CartCubit>().removeBookAt(index);
             });
-
-            // Then show a snackbar.
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text('caca dismissed')));
           },
           child: Container(
-            height: 80,
+            height: 100,
             padding:
                 const EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 5),
             child: Row(children: [
-              Image.network(
-                  'https://media.licdn.com/dms/image/C4D03AQFpv8dHg5sz8A/profile-displayphoto-shrink_100_100/0/1600197041834?e=1691625600&v=beta&t=-q05aypl3mtM8FKZiu5OPxy_ErE6oZNUxnv0G2cdJms'),
+              Image.network(cart.books.elementAt(index).coverUrl.toString()),
               Flexible(
                 flex: 50,
                 child: Container(
                     margin: const EdgeInsets.only(left: 15.0),
                     alignment: Alignment.centerLeft,
-                    child: const Text(
-                      "Harry la Fraude à l'école des pessis",
-                      style: TextStyle(
+                    child: Text(
+                      cart.books.elementAt(index).title,
+                      style: const TextStyle(
                         color: Colors.black,
                         fontSize: 20,
                         fontFamily: "Roboto",
@@ -243,9 +202,9 @@ class _BasketSheetState extends State<BasketSheet> {
                 child: Container(
                     margin: const EdgeInsets.only(left: 15.0),
                     alignment: Alignment.centerLeft,
-                    child: const Text(
-                      "50.20 €",
-                      style: TextStyle(
+                    child: Text(
+                      "\$${cart.books.elementAt(index).price}",
+                      style: const TextStyle(
                         color: Colors.black,
                         fontFamily: "Roboto",
                         fontSize: 20,
@@ -268,9 +227,5 @@ class _BasketSheetState extends State<BasketSheet> {
         );
       },
     ));
-  }
-
-  Widget _expandedWidget() {
-    return getWidget([getHeaderWidgets()] + [getBooksWidget()]);
   }
 }
