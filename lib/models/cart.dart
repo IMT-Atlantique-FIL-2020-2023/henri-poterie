@@ -18,6 +18,10 @@ class Cart {
 
   /// Compute the total price of the cart with the best offer
   Future<(double newPrice, String offerType)> computeTotalWithOffer() async {
+    if (books.isEmpty) {
+      return (0.00, "Empty");
+    }
+
     final commercialOffers = await henriPotierRestClient.getCommercialOffers(
         ListStringToJoin(books.map((b) => b.isbn).toList()));
 
