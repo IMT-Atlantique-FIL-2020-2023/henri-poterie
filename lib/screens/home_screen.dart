@@ -16,8 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) =>
-        LibraryBloc()
-          ..add(const LibraryEventBooksRequested()),
+            LibraryBloc()..add(const LibraryEventBooksRequested()),
         child: Scaffold(
             appBar: AppBar(
               title: const Text("Henri Poterie"),
@@ -26,30 +25,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 scrollDirection: Axis.vertical,
                 child: Container(
                     alignment: Alignment.topCenter,
-                    child: MultiBlocListener(listeners:
-                    [BlocListener(listener: (context, state) {
-                      return const Wrap(
+                    child: BlocBuilder<LibraryBloc, LibraryState>(
+                        builder: (context, state) {
+                      if (state.status == LibraryStatus.loading) {
+                        return const Center(
+                            heightFactor: 3,
+                            child: CircularProgressIndicator());
+                      }
+                      return Wrap(
                         spacing: 20,
                         children: [
-                          Book(),
-                          Book(),
-                          Book(),
-                          Book(),
-                          Book(),
-                          Book(),
-                          Book(),
-                          Book(),
-                          Book(),
-                          Book(),
-                          Book(),
-                          Book(),
+                          for (var book in state.books) Book(book: book)
                         ],
-                      )
-                    })
-                    ])
-                )
-            )
-        )
-    );
+                      );
+                    })))));
   }
 }

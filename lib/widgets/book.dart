@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
+import 'package:henri_poterie/models/book.dart' as model;
 
 class Book extends StatelessWidget {
-  const Book({super.key});
+  final model.Book _book;
+
+  const Book({super.key, required model.Book book}) : _book = book;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => {Navigator.pushNamed(context, '/book')},
-      child: const Padding(
+      child: Padding(
         padding: EdgeInsets.all(5.0),
         child: SizedBox(
           width: 150,
@@ -15,15 +18,13 @@ class Book extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Image(
-                  image: NetworkImage(
-                      'https://firebasestorage.googleapis.com/v0/b/henri-potier.appspot.com/o/hp0.jpg?alt=media')),
+              Image(image: NetworkImage(_book.coverUrl.toString())),
               Text(
-                'Henri Potier à l\'école des sorciers',
+                _book.title,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
               ),
               Text(
-                '\$35',
+                '\$${_book.price}',
               )
             ],
           ),
